@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Image from 'next/image';
 
 interface SearchResult {
   id: number;
@@ -69,10 +70,13 @@ const VideoPlayer = ({ selectedItem }: VideoPlayerProps) => {
           </div>
           <div className="lg:w-1/3">
             {details.poster_path && (
-              <img
+              <Image
                 src={`https://image.tmdb.org/t/p/w300${details.poster_path}`}
-                alt={details.title || details.name}
+                alt={details.title || details.name || 'Video player poster'}
+                width={300} // Assuming w300 means 300px width
+                height={450} // Assuming a common aspect ratio like 2:3 for posters (300 * 1.5)
                 className="w-full max-w-xs mx-auto lg:mx-0 mb-4 object-cover rounded shadow-lg"
+                priority // Prioritize loading as this is a key image for the selected item
               />
             )}
             <h2 className="text-3xl font-bold mb-2">{details.title || details.name}</h2>

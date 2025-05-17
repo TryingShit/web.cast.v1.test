@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Image from 'next/image';
 
 interface SearchResult {
   id: number;
@@ -37,7 +38,7 @@ const SearchBar = ({ onSearchResultSelect }: SearchBarProps) => {
           const response = await axios.get(
             `https://api.themoviedb.org/3/search/multi?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&query=${debouncedQuery}`
           );
-          setResults(response.data.results.filter((result: any) => result.media_type === 'movie' || result.media_type === 'tv'));
+          setResults(response.data.results.filter((result: SearchResult) => result.media_type === 'movie' || result.media_type === 'tv'));
         } catch (error) {
           console.error('Error fetching search results:', error);
           setResults([]);
@@ -73,10 +74,12 @@ const SearchBar = ({ onSearchResultSelect }: SearchBarProps) => {
               onClick={() => handleSelectResult(result)}
             >
               {result.poster_path && (
-                <img
+                <Image
                   src={`https://image.tmdb.org/t/p/w92${result.poster_path}`}
-                  alt={result.title || result.name}
-                  className="w-10 h-15 mr-2 object-cover rounded"
+                  alt={result.title || result.name || 'Search result poster'}
+                  width={40} // Corresponds to w-10 (10 * 4px = 40px)
+                  height={60} // Corresponds to h-15 (15 * 4px = 60px)
+                  className="mr-2 object-cover rounded"
                 />
               )}
               <span>{result.title || result.name} ({result.media_type === 'movie' ? 'Movie' : 'TV Show'})</span>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Image from 'next/image';
 
 interface MediaItem {
   id: number;
@@ -59,22 +60,25 @@ const Recommendations = ({ onSelectItem }: RecommendationsProps) => {
     return <p className="text-center text-gray-400 py-5">No trending content available at the moment.</p>;
   }
 
-  const renderMediaGrid = (items: MediaItem[], title: string) => (
+  const renderMediaGrid = (items: MediaItem[], title: string, priorityLoadCount: number = 0) => (
     items.length > 0 && (
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-4 text-white">{title}</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {items.map((item) => (
+          {items.map((item, index) => (
             <div
               key={item.id}
               className="bg-gray-700 rounded-lg overflow-hidden shadow-lg cursor-pointer transform hover:scale-105 transition-transform duration-200 ease-in-out"
               onClick={() => onSelectItem(item)} // Use the callback on item click
             >
               {item.poster_path ? (
-                <img
+                <Image
                   src={`https://image.tmdb.org/t/p/w300${item.poster_path}`}
-                  alt={item.title || item.name}
+                  alt={item.title || item.name || 'Recommendation poster'}
+                  width={300} // Assuming w300 means 300px width
+                  height={450} // Assuming a common aspect ratio like 2:3 for posters (300 * 1.5)
                   className="w-full h-auto object-cover"
+                  priority={index < priorityLoadCount} // Prioritize loading for specified number of images
                 />
               ) : (
                 <div className="w-full h-48 bg-gray-600 flex items-center justify-center">
@@ -95,8 +99,8 @@ const Recommendations = ({ onSelectItem }: RecommendationsProps) => {
 
   return (
     <div className="mt-8">
-      {renderMediaGrid(trendingMovies, 'Trending Movies This Week')}
-      {renderMediaGrid(trendingTvShows, 'Trending TV Series This Week')}
+      {renderMediaGrid(trendingMovies, 'Trending Movies This Week', 5)}
+      {renderMediaGrid(trendingTvShows, 'Trending TV Series This Week', 5)}
     </div>
   );
 };
