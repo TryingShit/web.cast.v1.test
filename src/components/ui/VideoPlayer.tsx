@@ -64,7 +64,7 @@ const VideoPlayer = ({ selectedItem }: VideoPlayerProps) => {
                 title={details.title || details.name}
                 allowFullScreen
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-                sandbox=""
+                sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-forms"
                 className="w-full h-full"
               ></iframe>
             </div>
